@@ -12,7 +12,8 @@ export default function ContactForm() {
     event.preventDefault();
     setStatus("idle");
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const payload = {
       name: formData.get("name"),
       email: formData.get("email"),
@@ -35,7 +36,7 @@ export default function ContactForm() {
         }
 
         setStatus("success");
-        event.currentTarget.reset();
+        form.reset();
       } catch {
         setStatus("error");
       }
@@ -99,7 +100,7 @@ export default function ContactForm() {
         </button>
         {status === "success" && (
           <p className="text-sm text-[var(--accent)]">
-            Thanks! I’ll reply within 1-2 business days.
+            Thanks! I'll reply within 1-2 business days.
           </p>
         )}
         {status === "error" && (
