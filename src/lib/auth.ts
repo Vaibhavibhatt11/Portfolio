@@ -16,14 +16,14 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const email = credentials?.email?.toLowerCase();
+        const email = credentials?.email?.toLowerCase().trim();
         const password = credentials?.password;
 
         if (!email || !password) {
           return null;
         }
 
-        const allowedAdmin = process.env.ADMIN_EMAIL?.toLowerCase();
+        const allowedAdmin = process.env.ADMIN_EMAIL?.toLowerCase().trim();
         if (!allowedAdmin || email !== allowedAdmin) {
           return null;
         }
