@@ -15,7 +15,12 @@ export default function SiteFooter({ name, socials }: SiteFooterProps) {
               vhb1114@gmail.com
             </a>
             <span>•</span>
-            <a href="tel:+919909949320" className="transition hover:text-[var(--text)]">
+            <a
+              href="https://wa.me/919909949320?text=Hello%20Vaibhavi%2C%20I%27d%20like%20to%20discuss%20a%20project."
+              className="transition hover:text-[var(--text)]"
+              target="_blank"
+              rel="noreferrer"
+            >
               9909949320
             </a>
           </div>
