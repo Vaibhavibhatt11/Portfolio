@@ -24,6 +24,9 @@ export default function SiteFooter({ name, socials }: SiteFooterProps) {
               9909949320
             </a>
           </div>
+          <div className="text-xs text-[var(--text-muted)]">
+            WhatsApp: 9909949320
+          </div>
         </div>
         <div className="flex flex-wrap gap-4">
           {socials.map((link) => (

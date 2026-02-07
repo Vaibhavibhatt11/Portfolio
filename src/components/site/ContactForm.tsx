@@ -8,7 +8,7 @@ export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [isPending, startTransition] = useTransition();
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatus("idle");
 
@@ -21,18 +21,24 @@ export default function ContactForm() {
       sourcePath: pathname,
     };
 
-    startTransition(() => {
-      fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Request failed");
-          setStatus("success");
-          event.currentTarget.reset();
-        })
-        .catch(() => setStatus("error"));
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({ ok: res.ok }));
+
+        if (!res.ok || data?.ok === false) {
+          throw new Error("Request failed");
+        }
+
+        setStatus("success");
+        event.currentTarget.reset();
+      } catch {
+        setStatus("error");
+      }
     });
   };
 
