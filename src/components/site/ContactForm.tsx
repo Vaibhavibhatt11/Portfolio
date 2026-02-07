@@ -15,11 +15,6 @@ export default function ContactForm() {
     const form = event.currentTarget;
     const formData = new FormData(form);
     const message = String(formData.get("message") ?? "");
-    if (message.trim().length < 100) {
-      setStatus("error");
-      return;
-    }
-
     const payload = {
       name: formData.get("name"),
       email: formData.get("email"),
@@ -95,7 +90,7 @@ export default function ContactForm() {
           required
           rows={5}
           className="rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--accent)]"
-          placeholder="Tell me a bit about your project (at least 5 characters)."
+          placeholder="Tell me about your project."
         />
       </div>
       <div className="flex flex-col gap-2 md:col-span-2">
@@ -117,12 +112,12 @@ export default function ContactForm() {
         )}
         {status === "success" && (
           <p className="text-sm text-[var(--accent)]">
-            Thanks! I'll reply within 1-2 business days.
+            Thanks! I'll reply you back.
           </p>
         )}
         {status === "error" && (
           <p className="text-sm text-red-400">
-            Please enter at least 100 characters and try again.
+            Something went wrong. Please try again or email directly.
           </p>
         )}
       </div>

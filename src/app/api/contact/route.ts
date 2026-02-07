@@ -8,7 +8,7 @@ const ContactSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   company: z.string().optional(),
-  message: z.string().min(100),
+  message: z.string().min(1),
   sourcePath: z.string().optional(),
 });
 
