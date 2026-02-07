@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 
 export default function ContactForm() {
   const pathname = usePathname();
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [isPending, startTransition] = useTransition();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setStatus("idle");
+    setStatus("sending");
 
     const form = event.currentTarget;
     const formData = new FormData(form);
@@ -41,6 +41,10 @@ export default function ContactForm() {
         setStatus("error");
       }
     });
+  };
+
+  const retry = () => {
+    setStatus("idle");
   };
 
   return (
@@ -93,11 +97,20 @@ export default function ContactForm() {
       <div className="flex flex-col gap-2 md:col-span-2">
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || status === "sending"}
           className="cta-primary inline-flex w-fit items-center gap-2 rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] transition disabled:opacity-60"
         >
-          Send Inquiry
+          {status === "sending" ? "Sending..." : "Send Inquiry"}
         </button>
+        {status === "error" && (
+          <button
+            type="button"
+            onClick={retry}
+            className="w-fit rounded-full border border-[var(--border)] px-5 py-2 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)] transition hover:text-[var(--text)]"
+          >
+            Try Again
+          </button>
+        )}
         {status === "success" && (
           <p className="text-sm text-[var(--accent)]">
             Thanks! I'll reply within 1-2 business days.
