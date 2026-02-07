@@ -14,11 +14,17 @@ export default function ContactForm() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const message = String(formData.get("message") ?? "");
+    if (message.trim().length < 100) {
+      setStatus("error");
+      return;
+    }
+
     const payload = {
       name: formData.get("name"),
       email: formData.get("email"),
       company: formData.get("company"),
-      message: formData.get("message"),
+      message,
       sourcePath: pathname,
     };
 
@@ -29,9 +35,7 @@ export default function ContactForm() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
-        const data = await res.json().catch(() => ({ ok: res.ok }));
-
-        if (!res.ok || data?.ok === false) {
+        if (!res.ok) {
           throw new Error("Request failed");
         }
 
@@ -118,7 +122,7 @@ export default function ContactForm() {
         )}
         {status === "error" && (
           <p className="text-sm text-red-400">
-            Something went wrong. Please try again or email directly.
+            Please enter at least 100 characters and try again.
           </p>
         )}
       </div>
