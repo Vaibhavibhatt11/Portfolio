@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { deleteMessage, updateMessage } from "./actions";
+import MessageActions from "@/components/admin/MessageActions";
 
 export const dynamic = "force-dynamic";
 
@@ -36,38 +37,11 @@ export default async function AdminMessagesPage() {
                 }).format(message.createdAt)}
               </div>
             </div>
-            <form
-              action={updateMessage}
-              className="mt-4 flex flex-wrap items-center gap-3"
-            >
-              <input type="hidden" name="id" value={message.id} />
-              <select
-                name="tag"
-                defaultValue={message.tag}
-                className="rounded-full border border-[var(--border)] bg-transparent px-4 py-2 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]"
-              >
-                <option value="FREELANCE">Freelance</option>
-                <option value="JOB">Job</option>
-                <option value="GENERAL">General</option>
-              </select>
-              <label className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                <input type="checkbox" name="isRead" defaultChecked={message.isRead} />{" "}
-                Mark as read
-              </label>
-              <button
-                type="submit"
-                className="rounded-full border border-[var(--border)] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]"
-              >
-                Update
-              </button>
-              <button
-                type="submit"
-                formAction={deleteMessage}
-                className="rounded-full border border-red-500/60 px-4 py-2 text-xs uppercase tracking-[0.2em] text-red-300"
-              >
-                Delete
-              </button>
-            </form>
+            <MessageActions
+              message={message}
+              updateAction={updateMessage}
+              deleteAction={deleteMessage}
+            />
           </div>
         ))}
         {messages.length === 0 ? (
