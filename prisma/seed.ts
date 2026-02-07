@@ -289,7 +289,11 @@ async function main() {
         order: 2,
       },
       { label: "Email", url: "mailto:vhbh1114@gmail.com", order: 3 },
-      { label: "Phone", url: "tel:+919099994320", order: 4 },
+      {
+        label: "WhatsApp",
+        url: "https://wa.me/919909949320?text=Hello%20Vaibhavi%2C%20I%27d%20like%20to%20discuss%20a%20project.",
+        order: 4,
+      },
     ],
   });
 
