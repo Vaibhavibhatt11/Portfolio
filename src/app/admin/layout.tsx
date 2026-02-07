@@ -1,6 +1,8 @@
 import AdminNav from "@/components/admin/AdminNav";
 import SignOutButton from "@/components/admin/SignOutButton";
 import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +11,12 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return <>{children}</>;
+  }
+
   const settings = await prisma.siteSettings.findFirst();
 
   return (
