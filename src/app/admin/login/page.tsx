@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -18,13 +20,15 @@ export default function AdminLoginPage() {
       const result = await signIn("credentials", {
         email,
         password,
-        redirect: true,
-        callbackUrl: "/admin",
+        redirect: false,
       });
 
-      if (result?.error) {
-        setError("Invalid credentials.");
+      if (result?.error || !result?.ok) {
+        setError("Invalid credentials or server configuration.");
+        return;
       }
+
+      router.push("/admin");
     });
   };
 
