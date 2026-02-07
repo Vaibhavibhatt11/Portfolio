@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+}
+
+enum MessageTag {
+  FREELANCE
+  JOB
+  GENERAL
+}
+
+enum AnalyticsEventType {
+  PAGEVIEW
+  CTA_CLICK
+}
+
+model User {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  name         String?
+  email        String    @unique
+  passwordHash String
+  role         UserRole  @default(ADMIN)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model SiteSettings {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  role             String
+  tagline          String
+  heroBadge        String?
+  ctaLabel         String   @default("Open for Freelance Projects")
+  openForFreelance Boolean  @default(true)
+  resumeUrl        String?
+  heroImageUrl     String?
+  availabilityNote String?
+  specialties      String?
+  delivery         String?
+  focusAreas       String[] @default([])
+  freelanceFit     String?
+  skillsHeading    String?
+  servicesHeading  String?
+  projectsHeading  String?
+  experienceHeading String?
+  contactBadge     String?
+  contactHeading   String?
+  contactBody      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model About {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  headline  String
+  bio       String
+  location  String?
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Skill {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  category  String?
+  level     String?
+  order     Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  order       Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String   @unique
+  description String
+  imageUrl    String?
+  imageAlt    String?
+  techStack   String[]
+  liveUrl     String?
+  repoUrl     String?
+  featured    Boolean  @default(false)
+  visible     Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Experience {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  company     String
+  role        String
+  startDate   DateTime
+  endDate     DateTime?
+  description String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Education {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  school      String
+  program     String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SocialLink {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  label     String
+  url       String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String
+  company    String?
+  message    String
+  tag        MessageTag @default(GENERAL)
+  isRead     Boolean    @default(false)
+  sourcePath String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model AnalyticsEvent {
+  id          String             @id @default(auto()) @map("_id") @db.ObjectId
+  type        AnalyticsEventType
+  path        String
+  visitorHash String
+  userAgent   String?
+  date        DateTime
+  createdAt   DateTime           @default(now())
+
+  @@index([date])
+  @@index([path])
+  @@index([visitorHash, date])
+}
