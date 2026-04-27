@@ -31,8 +31,7 @@ export default async function AdminProjectsPage() {
           />
           <input
             name="slug"
-            required
-            placeholder="Slug (e.g. product-console)"
+            placeholder="Slug (optional)"
             className="rounded-2xl border border-[var(--border)] bg-transparent px-4 py-3 text-sm"
           />
           <textarea
