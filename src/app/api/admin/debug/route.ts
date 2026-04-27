@@ -3,6 +3,37 @@ import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
 
+function getDatabaseUrlInfo() {
+  const databaseUrl = process.env.DATABASE_URL;
+
+  if (!databaseUrl) {
+    return {
+      databaseUrlSet: false,
+      databaseUrlProtocol: null,
+      databaseUrlHost: null,
+      databaseUrlDatabase: null,
+    };
+  }
+
+  try {
+    const parsed = new URL(databaseUrl);
+
+    return {
+      databaseUrlSet: true,
+      databaseUrlProtocol: parsed.protocol,
+      databaseUrlHost: parsed.hostname,
+      databaseUrlDatabase: parsed.pathname.replace(/^\//, "") || null,
+    };
+  } catch {
+    return {
+      databaseUrlSet: true,
+      databaseUrlProtocol: "INVALID_URL",
+      databaseUrlHost: null,
+      databaseUrlDatabase: null,
+    };
+  }
+}
+
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token");
   const debugToken = process.env.DEBUG_TOKEN;
@@ -23,8 +54,12 @@ export async function GET(request: NextRequest) {
       adminEmailSet: Boolean(adminEmail),
       adminUserExists: Boolean(admin),
       adminHasPassword: Boolean(admin?.passwordHash),
+      database: getDatabaseUrlInfo(),
     });
   } catch (error) {
-    return NextResponse.json({ ok: false, error: "DB_ERROR" }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "DB_ERROR", database: getDatabaseUrlInfo() },
+      { status: 500 },
+    );
   }
 }
