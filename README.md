@@ -13,7 +13,7 @@ Production-ready personal portfolio with a secure admin panel, custom analytics,
 - Vercel deployment
 
 ## Architecture Overview
-- Public site renders server-side from Postgres.
+- Public site renders server-side from MongoDB Atlas through Prisma.
 - Admin panel protected with NextAuth + middleware.
 - Server actions manage all CRUD and Cloudinary uploads.
 - Analytics handled by a lightweight `/api/track` endpoint.
@@ -65,7 +65,7 @@ npm run dev
 ```
 
 ## Admin Authentication
-- Credentials stored in Postgres.
+- Credentials stored in MongoDB.
 - Seed creates the admin user using `ADMIN_EMAIL` + `ADMIN_PASSWORD`.
 - Middleware protects `/admin/*`.
 - Server actions also check admin session.
@@ -91,6 +91,23 @@ npm run dev
 npx prisma db push
 ```
 5. Deploy and verify.
+
+### Vercel MongoDB DNS Troubleshooting
+If Vercel logs show a Prisma error like `Error creating a database connection`
+with an SRV lookup for `_mongodb._tcp...mongodb.net.ec2.internal`, first verify
+the Vercel `DATABASE_URL` value. It must be the exact MongoDB Atlas SRV string,
+for example:
+
+```
+mongodb+srv://USER:ENCODED_PASSWORD@cluster0.xxxxx.mongodb.net/portfolio?retryWrites=true&w=majority
+```
+
+- Use the host from Atlas exactly, ending in `.mongodb.net`.
+- Do not include `.ec2.internal`, quotes, spaces, or line breaks in the Vercel value.
+- URL-encode special characters in the password, such as `@`, `#`, `%`, `/`, and `?`.
+- Make sure the Atlas cluster still exists and is not paused.
+- In Atlas Network Access, allow Vercel to connect. For most Vercel deployments,
+  that means allowing `0.0.0.0/0` unless you have a dedicated networking setup.
 
 ## Notes
 - Cloudinary uploads happen server-side in admin actions.

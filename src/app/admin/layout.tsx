@@ -3,7 +3,7 @@ import SignOutButton from "@/components/admin/SignOutButton";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({
@@ -11,9 +11,15 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = (await headers()).get("x-current-path");
+
+  if (pathname?.startsWith("/admin/login")) {
+    return <>{children}</>;
+  }
+
   const session = await getServerSession(authOptions);
   if (!session) {
-    redirect("/admin/login");
+    return <>{children}</>;
   }
 
   const settings = await prisma.siteSettings.findFirst();
