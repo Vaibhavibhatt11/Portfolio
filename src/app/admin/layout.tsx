@@ -1,8 +1,6 @@
 import AdminNav from "@/components/admin/AdminNav";
 import SignOutButton from "@/components/admin/SignOutButton";
 import { prisma } from "@/lib/db";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { headers } from "next/headers";
 export const dynamic = "force-dynamic";
 
@@ -14,11 +12,6 @@ export default async function AdminLayout({
   const pathname = (await headers()).get("x-current-path");
 
   if (pathname?.startsWith("/admin/login")) {
-    return <>{children}</>;
-  }
-
-  const session = await getServerSession(authOptions);
-  if (!session) {
     return <>{children}</>;
   }
 
